@@ -10,48 +10,28 @@ namespace LINQDemo
     {
         static void Main(string[] args)
         {
-            using (var db = new RestaurantContext())
-            {
-                //JOIN & PROJECTION
-                var query1 = from r in db.Restaurants
-                             join s in db.Suburbs on r.SuburbID equals s.SuburbID
-                             select new { RestaurantName = r.Name, r.Cuisine, Suburb = s.SuburbName };
-
-                foreach (var item in query1)
+           using(var db = new RestaurantContext())
+           {
+                var excellentRestaurnts = db.Restaurants.Where(r => r.Ratings.All(ra => ra.RatingValue >= 4)
+                                                                && r.Ratings.Count() > 0);
+                foreach(var r in excellentRestaurnts)
                 {
-                    Console.WriteLine($"Name: {item.RestaurantName}, Cuisine: {item.Cuisine}, Suburb: {item.Suburb}");
+                    Console.WriteLine(r.Name);
                 }
 
-                //GROUP
-                var query2 = from r in query1
-                             group r by r.Suburb into g
-                             select g;
+                Console.WriteLine("-----------------------");
 
-                foreach (var resGroup in query2)
+                var strictCustomers = db.Customers.Where(c => c.Ratings.Any(ra => ra.RatingValue <= 2));
+
+                foreach (var c in strictCustomers)
                 {
-                    Console.WriteLine($"Suburb: {resGroup.Key}");
-                    foreach (var r in resGroup)
-                    {
-                        Console.WriteLine($"Name: {r.RestaurantName}, Cuisine: {r.Cuisine}");
-                    }
-                    Console.WriteLine();
+                    Console.WriteLine(c.CustomerName);
                 }
 
-                //AGGREGATE
-                var query3 = from r in db.Restaurants
-                             join ra in db.Ratings on r.ResID equals ra.ResID
-                             group r by r.ResID into g
-                             select g;
+                Console.WriteLine("-----------------------");
 
-                foreach (var resGroup in query3)
-                {
-                    Console.WriteLine("Restaurant: {0}", resGroup.Select(r => r.Name).First());
-                    var restaurant = resGroup.First();
-                    Console.WriteLine("Average Rating: {0:0.00}", restaurant.Ratings.Select(ra => ra.RatingValue).Average());
-                    Console.WriteLine("Number of Ratings: {0}", restaurant.Ratings.Count());
-
-                    Console.WriteLine();
-                }
+                var checkCuisine = excellentRestaurnts.Select(r => r.Cuisine).Contains("Chinese");
+                Console.WriteLine(checkCuisine);
             }
         }
     }

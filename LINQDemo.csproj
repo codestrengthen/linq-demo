@@ -78,7 +78,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="LINQ Aggregate Methods.pdf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
