@@ -12,26 +12,42 @@ namespace LINQDemo
         {
            using(var db = new RestaurantContext())
            {
-                var excellentRestaurnts = db.Restaurants.Where(r => r.Ratings.All(ra => ra.RatingValue >= 4)
-                                                                && r.Ratings.Count() > 0);
-                foreach(var r in excellentRestaurnts)
+                var givenRatings = db.Ratings.Select(ra => ra.RatingValue).Distinct();
+                foreach(var rv in givenRatings)
+                {
+                    Console.WriteLine(rv);
+                }
+
+                Console.WriteLine("----------------------");
+
+                var distinctRestaurants = db.Restaurants.AsEnumerable().Distinct();
+                foreach(var r in distinctRestaurants)
                 {
                     Console.WriteLine(r.Name);
                 }
 
-                Console.WriteLine("-----------------------");
+                Console.WriteLine("----------------------");
 
-                var strictCustomers = db.Customers.Where(c => c.Ratings.Any(ra => ra.RatingValue <= 2));
 
-                foreach (var c in strictCustomers)
-                {
-                    Console.WriteLine(c.CustomerName);
-                }
+                var firstRestaurant = db.Restaurants.Where(r => r.Name == "Test").FirstOrDefault();
+                //Console.WriteLine(firstRestaurant.Name);
 
-                Console.WriteLine("-----------------------");
+                Console.WriteLine("----------------------");
 
-                var checkCuisine = excellentRestaurnts.Select(r => r.Cuisine).Contains("Chinese");
-                Console.WriteLine(checkCuisine);
+                var restaurants = db.Restaurants;
+
+                restaurants.OrderBy(r => r.ResID).Skip(3).ToList()
+                           .ForEach(r => Console.WriteLine($"{r.ResID} {r.Name}"));
+
+                Console.WriteLine("----------------------");
+
+                restaurants.Take(3).ToList()
+                           .ForEach(r => Console.WriteLine($"{r.ResID} {r.Name}"));
+
+                Console.WriteLine("----------------------");
+
+                restaurants.OrderBy(r => r.ResID).Skip(3).Take(3).ToList()
+                           .ForEach(r => Console.WriteLine($"{r.ResID} {r.Name}"));
             }
         }
     }

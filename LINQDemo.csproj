@@ -72,12 +72,14 @@
     <Compile Include="Rating.cs" />
     <Compile Include="Restaurant.cs" />
     <Compile Include="RestaurantContext.cs" />
+    <Compile Include="RestaurantPartial.cs" />
     <Compile Include="Suburb.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="LINQ Set Methods and Other Common Operators.pdf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
